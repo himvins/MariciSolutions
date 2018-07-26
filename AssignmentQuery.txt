@@ -1,0 +1,58 @@
+
+
+CREATE TABLE #AssignmentTransaction
+(
+  [R_NO] int , 
+  [AssignedTo] varchar(20), 
+  [Action] varchar(25),
+);
+
+
+INSERT INTO #AssignmentTransaction
+(
+  [R_NO], 
+  [AssignedTo], [Action]
+)
+VALUES
+    (1, 'Anjana',  'SOW'   ),
+    (2, 'Anjana',  'CHANGE'),
+    (3, 'Anjana',  'CHANGE'),
+    (4, 'Anjana',  'SOW'   ),
+    (5, 'Anjana',  'SOW'   ),
+    (6, 'Anjana',  'SOW'   ),
+    (7, 'Himanshu','CHANGE'),
+    (8, 'Himanshu','CHANGE'),
+    (9, 'Himanshu','SOW'   ),
+    (10,'Himanshu','CHANGE')
+    
+
+select AssignedTo,Action ,count(Action) as xCount into #temp from #AssignmentTransaction group by AssignedTo, Action
+
+	DECLARE @cols AS NVARCHAR(MAX),
+    @query  AS NVARCHAR(MAX)
+
+select @cols = STUFF((SELECT ',' + QUOTENAME(Action) 
+                    from #temp
+                    group by Action
+                    order by Action
+            FOR XML PATH(''), TYPE
+            ).value('.', 'NVARCHAR(MAX)') 
+        ,1,1,'')
+
+set @query = 'SELECT AssignedTo,' + @cols + ' from 
+             (
+                select 
+				[AssignedTo], [Action], xCount 
+                from #temp
+            ) x
+            pivot 
+            (
+                sum(xCount)
+                for Action in (' + @cols + ')
+            ) p '
+
+select * from #AssignmentTransaction
+execute(@query);
+
+drop table #temp
+drop table #AssignmentTransaction
