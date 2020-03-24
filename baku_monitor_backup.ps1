@@ -41,7 +41,8 @@ Copy-Item $baseFolderForChange  -Destination $path"\"$time -Recurse
 
 Compress-Archive -Path $path"\"$time"\trstrg\*" -DestinationPath $path"\"$time"\trstrg\"trstrg.zip
 
+Copy-Item $path"\"$time"\trstrg\"trstrg.zip  -Destination "C:\Users\HimanshuV\Documents\backup\LatestBackupZipToUpload\"
 
 
-Read-Host -Prompt "Press Enter to continue"  
+Read-Host -Prompt "Press Enter to take the backup now.."  
 }
