@@ -35,8 +35,6 @@ if(!($path | Test-Path)) {
 
 $time = Get-Date -Format "HH_mm"
 
-new-item  $time -itemtype directory
-
 Copy-Item $baseFolderForChange  -Destination $path"\"$time -Recurse
 
 Compress-Archive -Path $path"\"$time"\trstrg\*" -DestinationPath $path"\"$time"\trstrg\"trstrg.zip
